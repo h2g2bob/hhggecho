@@ -1,0 +1,57 @@
+root@roke:~# cat /etc/systemd/system/h2g2bob-echo.service
+[Unit]
+Description=h2g2bob http echo server
+After=network.target auditd.service
+Requires=h2g2bob-echo.socket
+
+[Service]
+Type=simple
+User=hhggecho
+Group=hhggecho
+WorkingDirectory=/home/hhggecho/hhggecho/
+KillMode=process
+Restart=on-failure
+ExecStart=/home/hhggecho/env/bin/python3 hhggecho.py
+
+# Restrict more: filesystem read-only:
+ProtectSystem=strict
+PrivateTmp=true
+PrivateIPC=true
+ProtectClock=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictAddressFamilies=none
+
+# Restrict more: never get capabilities/suid:
+CapabilityBoundingSet=
+NoNewPrivileges=true
+SecureBits=noroot-locked no-setuid-fixup-locked
+
+# Restrict more: limits
+Nice=10
+OOMScoreAdjust=500
+CPUSchedulingPolicy=idle
+IOSchedulingClass=idle
+MemoryMax=100M
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+root@roke:~# cat /etc/systemd/system/h2g2bob-echo.socket 
+[Unit]
+Description=echo port 5647
+
+[Socket]
+ListenStream=0.0.0.0:5647
+NoDelay=true
+FileDescriptorName=ipp
+Service=h2g2bob-echo.service
+
+[Install]
+WantedBy=sockets.target
+
