@@ -22,11 +22,16 @@ TOO_SLOW = (
 DELAY = 0.1
 
 def main():
+    # I'm assuming you got systemd to make your socket for you
+    # You're supposed to use sd_listen_fds, which is a whole library to tell
+    # you the socket is on SD_LISTEN_FDS_START=3. I don't think Freedesktop
+    # has heard about pip or virtualenv.
+    # Systemd sets some environment variables, so I'll assert you're running
+    # this through systemd:
     assert int(environ["LISTEN_PID"]) == getpid()
     assert int(environ["LISTEN_FDS"]) == 1
     actual_listen_fds_socket = 3
 
-    # Set socket, which is the only useful thing that TCPServer.__init__ does:
     listen_sock = socket.fromfd(actual_listen_fds_socket, socket.AF_INET, socket.SOCK_STREAM)
     while True:
         listen_sock.listen(1)
