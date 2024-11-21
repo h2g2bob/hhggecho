@@ -20,6 +20,7 @@ TOO_SLOW = (
 )
 
 DELAY = 0.1
+MAXLEN = 4*1024
 
 def main():
     # I'm assuming you got systemd to make your socket for you
@@ -42,10 +43,18 @@ def main():
 def one_req(conn, addr):
     with conn:
         logging.info('Connected by %r', addr)
+
+        # Delay briefly to allow the client to send the full HTTP request
         time.sleep(DELAY)
+
+        # Then read the whole buffer in one go.
+        # Technically, you could send a few bytes, wait a while, and then send
+        # the rest of the request (ie: the slow http attack), but if you do
+        # that then you can fuck off
         try:
-            data = conn.recv((4*1024) - len(PREAMBLE))
+            data = conn.recv(MAXLEN - len(PREAMBLE))
         except TimeoutError:
+            # bacause conn.settimeout()
             conn.sendall(TOO_SLOW)
         else:
             conn.sendall(PREAMBLE + data)
