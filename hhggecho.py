@@ -9,7 +9,7 @@ from os import getpid
 
 PREAMBLE = (
     b"HTTP/1.1 200 OK\r\n"
-    b"Content-Type: text/html; charset=UTF-8\r\n"
+    b"Content-Type: text/plain; charset=UTF-8\r\n"
     b"Connection: close\r\n"
     b"\r\n"
 )
