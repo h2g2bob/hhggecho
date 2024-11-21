@@ -10,11 +10,13 @@ from os import getpid
 PREAMBLE = (
     b"HTTP/1.1 200 OK\r\n"
     b"Content-Type: text/plain; charset=UTF-8\r\n"
+    b"Server: hhggecho\r\n"
     b"Connection: close\r\n"
     b"\r\n"
 )
 TOO_SLOW = (
     b"HTTP/1.1 408 Request Timeout\r\n"
+    b"Server: hhggecho\r\n"
     b"Connection: close\r\n"
     b"\r\n"
 )
